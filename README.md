@@ -1,6 +1,6 @@
 # Shush
 
-Use templates to silence Alert Manager
+Use templates to silence Alert Manager. Currently behaves very similarly to `amtool import`, but with yaml. In the future this will allow for actual templating
 
 [![Release](https://img.shields.io/github/release-pre/alicekaerast/shush.svg?logo=github&style=flat&v=1)](https://github.com/alicekaerast/shush/releases)
 [![Build Status](https://img.shields.io/github/workflow/status/alicekaerast/shush/run-go-tests?logo=github&v=1)](https://github.com/alicekaerast/shush/actions)
