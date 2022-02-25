@@ -3,6 +3,7 @@ package lib
 import (
 	"github.com/fatih/color"
 	"github.com/prometheus/alertmanager/api/v2/client"
+	"github.com/prometheus/alertmanager/api/v2/models"
 	"github.com/rodaine/table"
 )
 
@@ -15,7 +16,9 @@ func ListSilences(c *client.Alertmanager) {
 	silencesResult, _ := c.Silence.GetSilences(nil)
 	silences := silencesResult.GetPayload()
 	for _, n := range silences {
-		tbl.AddRow(*n.ID, *n.Comment, *n.CreatedBy)
+		if *n.Status.State == models.SilenceStatusStateActive {
+			tbl.AddRow(*n.ID, *n.Comment, *n.CreatedBy)
+		}
 	}
 	tbl.Print()
 }
