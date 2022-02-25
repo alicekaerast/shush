@@ -1,5 +1,5 @@
 /*
-Copyright © 2021 Wheresalice
+Copyright © 2021 alicekaerast
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +21,14 @@ THE SOFTWARE.
 */
 package main
 
-import "github.com/wheresalice/go_boilerplate/cmd"
+import (
+	"github.com/alicekaerast/shush/cmd"
+	"os"
+)
 
 func main() {
-	cmd.Execute()
+	cmd := cmd.NewRootCommand()
+	if err := cmd.Execute(); err != nil {
+		os.Exit(1)
+	}
 }

@@ -8,9 +8,9 @@ updates:
       interval: "weekly"
       day: "friday"
     reviewers:
-      - "wheresalice"
+      - "alicekaerast"
     assignees:
-      - "wheresalice"
+      - "alicekaerast"
     labels:
       - "chore"
     open-pull-requests-limit: 10
@@ -23,9 +23,9 @@ updates:
       interval: "weekly"
       day: "friday"
     reviewers:
-      - "wheresalice"
+      - "alicekaerast"
     assignees:
-      - "wheresalice"
+      - "alicekaerast"
     labels:
       - "chore"
     open-pull-requests-limit: 10

@@ -1,5 +1,5 @@
 /*
-Copyright © 2021 Wheresalice
+Copyright © 2021 alicekaerast
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,69 +23,95 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-	"github.com/spf13/cobra"
-
+	"github.com/muesli/coral"
+	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"os"
+	"strings"
 )
 
-var cfgFile string
+const (
+	defaultConfigFilename = ".shush"
+	envPrefix             = "SHUSH"
+)
 
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
-	Use:   "go_boilerplate",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+var (
+	urlString = ""
+)
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
-}
-
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
-	cobra.CheckErr(rootCmd.Execute())
-}
-
-func init() {
-	cobra.OnInitialize(initConfig)
-
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.go_boilerplate.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-}
-
-// initConfig reads in config file and ENV variables if set.
-func initConfig() {
-	if cfgFile != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
-	} else {
-		// Find home directory.
-		home, err := os.UserHomeDir()
-		cobra.CheckErr(err)
-
-		// Search config in home directory with name ".go_boilerplate" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigType("yaml")
-		viper.SetConfigName(".go_boilerplate")
+func NewRootCommand() *coral.Command {
+	rootCmd := &coral.Command{
+		Use:   "shush",
+		Short: "Silence and expire silences",
+		Long:  "Do stuff",
+		PersistentPreRunE: func(cmd *coral.Command, args []string) error {
+			// You can bind cobra and viper in a few locations, but PersistencePreRunE on the root command works well
+			return initializeConfig(cmd)
+		},
+		Run: func(cmd *coral.Command, args []string) {},
 	}
 
-	viper.AutomaticEnv() // read in environment variables that match
+	rootCmd.AddCommand(silenceCmd)
+	rootCmd.AddCommand(unsilenceCmd)
 
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+	rootCmd.PersistentFlags().StringVar(&urlString, "url", "http://localhost", "URL to work against")
+	return rootCmd
+}
+
+func initializeConfig(cmd *coral.Command) error {
+	v := viper.New()
+
+	// Set the base name of the config file, without the file extension.
+	v.SetConfigName(defaultConfigFilename)
+
+	// Set as many paths as you like where viper should look for the
+	// config file. We are only looking in the current working directory.
+	v.AddConfigPath(".")
+	home, _ := os.UserHomeDir()
+	config, _ := os.UserConfigDir()
+	v.AddConfigPath(home)
+	v.AddConfigPath(config)
+
+	// Attempt to read the config file, gracefully ignoring errors
+	// caused by a config file not being found. Return an error
+	// if we cannot parse the config file.
+	if err := v.ReadInConfig(); err != nil {
+		// It's okay if there isn't a config file
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+			return err
+		}
 	}
+
+	// When we bind flags to environment variables expect that the
+	// environment variables are prefixed, e.g. a flag like --number
+	// binds to an environment variable STING_NUMBER. This helps
+	// avoid conflicts.
+	v.SetEnvPrefix(envPrefix)
+
+	// Bind to environment variables
+	// Works great for simple config names, but needs help for names
+	// like --favorite-color which we fix in the bindFlags function
+	v.AutomaticEnv()
+
+	// Bind the current command's flags to viper
+	bindFlags(cmd, v)
+
+	return nil
+}
+
+func bindFlags(cmd *coral.Command, v *viper.Viper) {
+	cmd.Flags().VisitAll(func(f *pflag.Flag) {
+		// Environment variables can't have dashes in them, so bind them to their equivalent
+		// keys with underscores, e.g. --favorite-color to STING_FAVORITE_COLOR
+		if strings.Contains(f.Name, "-") {
+			envVarSuffix := strings.ToUpper(strings.ReplaceAll(f.Name, "-", "_"))
+			v.BindEnv(f.Name, fmt.Sprintf("%s_%s", envPrefix, envVarSuffix))
+		}
+
+		// Apply the viper config value to the flag when the flag is not set and viper has a value
+		if !f.Changed && v.IsSet(f.Name) {
+			val := v.Get(f.Name)
+			cmd.Flags().Set(f.Name, fmt.Sprintf("%v", val))
+		}
+	})
 }

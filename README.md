@@ -1,27 +1,27 @@
-# Go Boilerplate
+# Shush
 
-> A template repo for new Go applications
+Use templates to silence Alert Manager
 
-[![Release](https://img.shields.io/github/release-pre/wheresalice/go_boilerplate.svg?logo=github&style=flat&v=1)](https://github.com/wheresalice/go_boilerplate/releases)
-[![Build Status](https://img.shields.io/github/workflow/status/wheresalice/go_boilerplate/run-go-tests?logo=github&v=1)](https://github.com/wheresalice/go_boilerplate/actions)
-[![Mergify Status](https://img.shields.io/endpoint.svg?url=https://gh.mergify.io/badges/wheresalice/go_boilerplate&style=flat&v=1)](https://mergify.io)
-[![Go](https://img.shields.io/github/go-mod/go-version/wheresalice/go_boilerplate?v=1)](https://golang.org/)
-[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/wheresalice/go_boilerplate)
-
-## Background
-
-It's always a pain remembering how to configure dependabot, mergify, and goreleaser.  This repo does it all for you, plus some other sensible defaults.
-
-It's opinionated, and has some hardcoded references to me, so you should consider forking this if you want to use it.
+[![Release](https://img.shields.io/github/release-pre/alicekaerast/shush.svg?logo=github&style=flat&v=1)](https://github.com/alicekaerast/shush/releases)
+[![Build Status](https://img.shields.io/github/workflow/status/alicekaerast/shush/run-go-tests?logo=github&v=1)](https://github.com/alicekaerast/shush/actions)
+[![Mergify Status](https://img.shields.io/endpoint.svg?url=https://gh.mergify.io/badges/alicekaerast/shush&style=flat&v=1)](https://mergify.io)
+[![Go](https://img.shields.io/github/go-mod/go-version/alicekaerast/shush?v=1)](https://golang.org/)
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/alicekaerast/shush)
 
 ## Usage
 
-1. Create a new repo using this template
-2. `s/go_boilerplate/yourappname/g`
-3. (if you are not me) `s/wheresalice/yourname/g` and edit `.github/FUNDING.yml`
+```shell
+shush silence -l # to list silences
+shush silence -y exampleSilence.yaml # to create a silence
+shush unsilence -i 1f5247d0-3f95-452a-9da2-3ab48c00c39d # to expire a silence
+```
 
-You should use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+It uses http://localhost as the alertmanager URL by default. You can override this by:
+
+* adding `--url http://example.org`
+* setting the environment variable `SHUSH_URL=http://example.net`
+* writing `url: http://example.com` to one of ./.shush.yml, ~/.shush.yml, ~/.config/.shush.yml
 
 ## License
 
-[![License](https://img.shields.io/github/license/wheresalice/go_boilerplate.svg?style=flat&v=1)](LICENSE)
+[![License](https://img.shields.io/github/license/alicekaerast/shush.svg?style=flat&v=1)](LICENSE)

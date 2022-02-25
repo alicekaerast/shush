@@ -25,7 +25,7 @@ pull_request_rules:
       - -title~=bump [^\s]+ from ([\d]+)\..+ to \1\.
     actions:
       comment:
-        message: "⚠️ @wheresalice: this is a major version bump and requires your attention"
+        message: "⚠️ @alicekaerast: this is a major version bump and requires your attention"
 
   # ===============================================================================
   # AUTOMATIC MERGE (APPROVALS)
@@ -51,7 +51,7 @@ pull_request_rules:
       - "#assignee=0"
     actions:
       assign:
-        users: ["wheresalice"]
+        users: ["alicekaerast"]
 
   # ===============================================================================
   # ALERTS
@@ -157,7 +157,7 @@ pull_request_rules:
           - author!=dependabot[bot]
           - author!=mergify[bot]
           - author!=allcontributors[bot]
-          - author!=wheresalice
+          - author!=alicekaerast
     actions:
       comment:
         message: |
