@@ -4,11 +4,12 @@ go 1.17
 
 require (
 	github.com/fatih/color v1.13.0
-	github.com/go-openapi/runtime v0.23.1
+	github.com/go-openapi/runtime v0.23.2
 	github.com/go-openapi/strfmt v0.21.2
 	github.com/muesli/coral v1.0.0
 	github.com/prometheus/alertmanager v0.23.0
 	github.com/rodaine/table v1.0.1
+	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.10.1
 	gopkg.in/yaml.v2 v2.4.0
 )
@@ -77,7 +78,6 @@ require (
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/xlab/treeprint v1.1.0 // indirect
 	go.mongodb.org/mongo-driver v1.8.3 // indirect
