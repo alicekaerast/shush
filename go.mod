@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/fatih/color v1.13.0
-	github.com/go-openapi/runtime v0.23.2
+	github.com/go-openapi/runtime v0.23.3
 	github.com/go-openapi/strfmt v0.21.2
 	github.com/muesli/coral v1.0.0
 	github.com/prometheus/alertmanager v0.24.0
