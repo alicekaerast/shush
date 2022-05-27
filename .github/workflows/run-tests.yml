@@ -21,6 +21,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Set up Go 1.18 in order to write go.list file
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.18
       - name: Write go list
         run: go list -json -m all > go.list
       - name: Ask Nancy
@@ -30,7 +34,7 @@ jobs:
     needs: [asknancy]
     strategy:
       matrix:
-        go-version: [1.17.x]
+        go-version: [1.18.x]
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
