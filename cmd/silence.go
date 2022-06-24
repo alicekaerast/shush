@@ -16,6 +16,7 @@ limitations under the License.
 package cmd
 
 import (
+	"bytes"
 	"github.com/alicekaerast/shush/lib"
 	clientruntime "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
@@ -29,6 +30,8 @@ import (
 	"log"
 	"net/url"
 	"os"
+	"path/filepath"
+	"text/template"
 	"time"
 )
 
@@ -45,7 +48,9 @@ var silenceCmd = &coral.Command{
 	Run: func(cmd *coral.Command, args []string) {
 
 		yamlFile, _ := cmd.Flags().GetString("yaml")
-		yamlContent, _ := os.ReadFile(yamlFile)
+		changeRef, _ := cmd.Flags().GetString("change")
+		yamlContent, _ := readYaml(yamlFile, changeRef)
+
 		silences := Silences{}
 		err := yaml.Unmarshal(yamlContent, &silences)
 		if err != nil {
@@ -91,6 +96,7 @@ var silenceCmd = &coral.Command{
 func init() {
 	silenceCmd.Flags().BoolP("list", "l", false, "Whether to list silences")
 	silenceCmd.Flags().StringP("yaml", "y", "", "The YAML file to use for silencing")
+	silenceCmd.Flags().StringP("change", "c", "", "A change reference (can be used in templates)")
 }
 
 func parseMatchers(inputMatchers []string) ([]labels.Matcher, error) {
@@ -106,4 +112,21 @@ func parseMatchers(inputMatchers []string) ([]labels.Matcher, error) {
 	}
 
 	return matchers, nil
+}
+
+func readYaml(filePath string, change string) ([]byte, error) {
+	var availableData = map[string]string{
+		"Change": change,
+	}
+	tmpl, err := template.New(filepath.Base(filePath)).
+		ParseFiles(filePath)
+	if err != nil {
+		return nil, err
+	}
+	var buf bytes.Buffer
+	if err := tmpl.Execute(&buf, availableData); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+
 }

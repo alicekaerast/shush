@@ -1,5 +1,5 @@
 ---
-- comment: testing stuff
+- comment: {{ .Change }} testing stuff
   matchers:
     - foo=bar
     - bar=foo
