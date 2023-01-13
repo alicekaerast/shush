@@ -7,7 +7,7 @@ import (
 	"github.com/rodaine/table"
 )
 
-func ListSilences(c *client.Alertmanager) {
+func ListSilences(c *client.AlertmanagerAPI) {
 	headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
 	columnFmt := color.New(color.FgYellow).SprintfFunc()
 	tbl := table.New("ID", "Comment", "Created By")
